@@ -1,0 +1,24 @@
+# Python packages for the FA2 Spark notebook and scripts.
+# Install with:  pip install -r requirements.txt   (or run setup.sh / setup.bat)
+# Exact versions used on the original machine (Python 3.14, macOS) are in requirements-lock.txt.
+# Spark also needs Java 17 or 21 installed on the machine (not a pip package).
+
+# Apache Spark (Python API)
+pyspark==4.2.0
+pyarrow>=15
+
+# Data handling (PySpark 4.2 does not fully support pandas 3 yet)
+pandas>=2.2,<3
+numpy>=1.26
+
+# Visualization
+matplotlib>=3.8
+seaborn>=0.13
+folium>=0.17
+networkx>=3.2
+
+# Jupyter
+jupyterlab>=4.0
+ipykernel>=6.29
+nbformat>=5.9
+nbconvert>=7.16

@@ -1,0 +1,211 @@
+
+===== SLIDE 1 =====
+eBay moved from SQL warehouses to Hadoop and NoSQL to handle Big Data
+Big Data Analytics  ·  FA1 mind-map case study  ·  Units 1 and 2
+[Group members]  ·  PCCoE, B.Tech  ·  October 2026
+--- speaker notes ---
+Introduce the group and the case: eBay, an online marketplace, and how its data pipeline moved from relational warehouses to Hadoop and NoSQL. Case study for FA1 (Unit 1: Introduction to Big Data, Unit 2: Hadoop Architecture).
+
+===== SLIDE 2 =====
+This talk asks: how did eBay use Hadoop and NoSQL where relational databases fell short?
+Which Hadoop components store and process eBay's data, and which NoSQL databases serve it?
+120M+
+active users
+300M+
+searches every day
+350M+
+items for sale
+eBay scale as reported in Hadoop and HBase @ eBay (c. 2013).
+2
+--- speaker notes ---
+2-MINUTE TALK (about 1.5 minutes spoken). Use slides 2, 7 and 9; the rest are backup for the viva.
+
+Why Big Data matters: eBay's data outgrew one database. It has 300 million searches a day, and in 2009 its log warehouse took in 150 billion new records a day. That is Volume, Velocity and Variety together.
+
+Why Hadoop is needed: relational warehouses like Teradata and Greenplum scale up and need a fixed schema. Hadoop scales out on cheap nodes and keeps three copies of every block.
+
+Which Hadoop component stores data: HDFS. YARN schedules resources and MapReduce processes the data, for example building eBay's search indexes.
+
+Which NoSQL we recommend: HBase for Hadoop-linked work, because it sits on HDFS and MapReduce can bulk-load it. eBay also uses Cassandra for fast writes and MongoDB for flexible product data.
+
+Industry application: e-commerce - search, recommendations and fraud detection. The mind map shows how every Unit 1 and Unit 2 topic connects through eBay's pipeline, with seven cross-links.
+
+===== SLIDE 3 =====
+eBay's data shows all five Vs, so one relational warehouse could not cope
+V
+eBay evidence
+Volume
+8–10 TB of new data a day into eBay's first large Hadoop cluster
+Velocity
+150 billion new log records a day (2009); 400M+ Cassandra writes a day
+Variety
+Logs, clicks, orders, images; SQL column packed with name=value text
+Veracity
+Fraud-detection time series in Cassandra help flag fake activity
+Value
+Search, recommendations and dashboards turn data into sales
+So what: Volume and Variety strain a fixed-schema SQL warehouse most.
+Sources: Monash (2009); Hadoop: The Power of the Elephant (eBay, n.d.); Cassandra at eBay (Patel, 2012).
+3
+--- speaker notes ---
+VIVA - Explain the 5 Vs: Volume = how much data; Velocity = how fast it arrives and must be processed; Variety = many formats (structured, semi-structured, unstructured); Veracity = how trustworthy or clean it is; Value = the business benefit extracted from it. eBay example for each is on this slide.
+
+===== SLIDE 4 =====
+Hadoop scaled out on cheap nodes where eBay's relational warehouses strained
+SQL warehouses
+Greenplum: 6.5 PB, 17 trillion records
+Semi-structured logs packed into one text column
+Greenplum replaced by Teradata over reliability
+Hadoop
+Add cheap nodes to scale out
+3 copies of every block
+Old data on 4× cheaper nodes
+Not either/or: in 2010 eBay ran Teradata (10+ PB) beside Hadoop.
+Sources: Monash (2009, 2010); HDFS storage efficiency using tiered storage (eBay, n.d.).
+4
+--- speaker notes ---
+VIVA - Why can't RDBMS handle Big Data efficiently? (1) It scales up on bigger machines, which gets expensive and hits a ceiling; (2) it needs a fixed schema, so semi-structured logs and images fit badly - eBay packed name=value text into one SQL column; (3) heavy joins over huge tables are slow. A distributed system scales out by adding commodity nodes and tolerates node failure. Note: eBay did not drop SQL; in 2010 it ran Teradata (10+ PB) beside Hadoop, and one analyst reported eBay then saw Hadoop as limited for joins.
+
+===== SLIDE 5 =====
+HDFS stores, YARN schedules and MapReduce processes eBay's data
+HDFS
+stores the data
+NameNode: file map
+DataNodes: 128–256 MB blocks
+Replication: 3 copies
+eBay: hundreds of PB
+YARN
+schedules resources
+Resource Manager: assigns cluster resources
+Node Manager: runs tasks
+eBay: ~2× job throughput
+MapReduce
+processes the data
+Map: split the work
+Reduce: combine results
+eBay: builds Cassini search indexes
+Sources: Hadoop-2 @ eBay (n.d.); eBay tiered storage (n.d.); Hadoop and HBase @ eBay (c. 2013).
+5
+--- speaker notes ---
+VIVA - Role of HDFS: distributed storage; a file is split into 128-256 MB blocks held on DataNodes, while the NameNode keeps the map of which blocks belong to which file. Why replication: each block has 3 copies on different machines, so a failed node loses no data and reads can be served from another copy. YARN: the cluster's resource manager - the Resource Manager hands out CPU and memory, Node Managers run the tasks - and it lets Spark, Storm and Tez share the cluster with MapReduce. MapReduce example from eBay: count searches per query - Map emits (query, 1) for every search, Reduce adds them up. eBay uses MapReduce to build its Cassini search indexes. How does eBay use Hadoop: store (HDFS, hundreds of PB), schedule (YARN), process (MapReduce, Hive, Spark) and feed HBase, Cassandra and MongoDB.
+
+===== SLIDE 6 =====
+eBay runs HBase, Cassandra and MongoDB, each matched to a different job
+Database
+eBay use
+Why it fits
+HBase
+Cassini search indexes; Kylin OLAP cubes
+Fast random reads and writes on HDFS; MapReduce bulk-loads it
+Cassandra
+Social signals, fraud time series, order tracking
+Very fast writes; scalable counters
+MongoDB
+Product metadata, loaded daily from Hadoop
+Flexible schema for varied product fields
+Our pick: HBase for Hadoop-linked work, because it runs on HDFS; MongoDB for the product catalogue.
+Sources: Hadoop and HBase @ eBay (c. 2013); Kylin (eBay, 2014); Patel (2012); MongoDB at eBay (n.d.).
+6
+--- speaker notes ---
+VIVA - HBase vs MongoDB: HBase is a wide-column store built on HDFS, with row-key lookups and range scans, strong consistency per row, and bulk loading from MapReduce - best for Hadoop-linked, huge, sparse tables. MongoDB is a document store (JSON-like documents) with a flexible schema and rich queries, with its own replication and sharding - best for varied catalogue-style data. Cassandra is a masterless wide-column store tuned for very fast writes across many nodes. Which would we recommend: HBase for Hadoop-linked workloads (eBay's Cassini search and Kylin OLAP both use it); the course's e-commerce hint points to MongoDB for the product catalogue. CAUTION: the MongoDB row comes from summaries of an eBay talk (MongoDB at eBay) that we have not read in full - check it before presenting.
+
+===== SLIDE 7 =====
+One map links every Unit 1 and Unit 2 topic through eBay's data pipeline
+BIG DATA ANALYTICS
+Unit 1: Introduction to Big Data
+Unit 2: Hadoop Architecture
+Definition
+Evolution
+5 Vs
+Characteristics
+Importance
+RDBMS vs Distributed Systems
+Big Data Frameworks
+Analytics Life Cycle
+Applications
+Need for Hadoop
+Distributed Systems
+HDFS
+YARN
+MapReduce
+NoSQL
+eBay Case Study
+Volume
+Velocity
+Variety
+Veracity
+Value
+NameNode · DataNode
+Replication
+Resource Manager
+Node Manager
+Map · Reduce
+HBase · Cassandra
+MongoDB
+SQL → Hadoop → NoSQL
+1
+2
+3
+4
+5
+6
+7
+Orange dashed lines 1–7 are cross-links (next slide). The syllabus's Facebook case study is replaced by eBay.
+7
+--- speaker notes ---
+The mind map follows the FA1 syllabus tree: Big Data Analytics at the centre, Unit 1 on the left, Unit 2 on the right. The syllabus's 'Facebook Case Study' leaf is replaced by 'eBay Case Study'. Orange dashed lines 1-7 are the cross-links explained on the next slide. For the 'use an AI tool' criterion, recreate this map in Napkin AI, XMind, Canva or Miro from the same text and keep this slide as the reference.
+
+===== SLIDE 8 =====
+Seven cross-links show how each Unit 1 concept is answered by a Unit 2 component
+#
+Unit 1 concept → Unit 2 component
+eBay evidence
+1
+5 Vs → Need for Hadoop
+8–10 TB a day outgrew SQL warehouses
+2
+Characteristics → Distributed Systems
+Scale-out nodes survive growth and failures
+3
+RDBMS vs Distributed → HDFS
+Hadoop stored data beside Teradata
+4
+Big Data Frameworks → YARN
+Hadoop 2 runs Spark, Storm and Tez
+5
+Analytics Life Cycle → MapReduce
+Process stage builds search indexes
+6
+Applications → NoSQL
+NoSQL stores serve live features
+7
+Applications → eBay Case Study
+Search, recommendations, fraud checks
+Sources: Hadoop-2 @ eBay (n.d.); Hadoop and HBase @ eBay (c. 2013); Patel (2012); Monash (2010).
+8
+--- speaker notes ---
+These are the seven cross-links drawn on the mind map. The FA1 brief asks for at least five meaningful cross-links; each pairs a Unit 1 problem or concept with the Unit 2 component that answers it, with an eBay fact as proof. Example chain from the brief: 5 Vs -> Need for Hadoop -> Distributed Storage -> HDFS -> MapReduce -> Analytics.
+
+===== SLIDE 9 =====
+Conclusions: eBay's Big Data needs pushed it from SQL-only to Hadoop plus NoSQL
+1. Big Data outgrew SQL-only warehouses: Volume, Velocity and Variety all appear at eBay.
+2. Hadoop added scale-out storage and processing: HDFS stores, YARN schedules, MapReduce processes.
+3. NoSQL serves the live features: HBase, Cassandra and MongoDB each fit a different job.
+Are there questions or feedback?   [Group members]  ·  PCCoE, B.Tech, Big Data Analytics  ·  FA1
+--- speaker notes ---
+Stay on this slide during questions. Invite feedback: 'Are there questions or feedback?'. Likely viva: 5 Vs (slide 3), why RDBMS can't cope (slide 4), role of HDFS and replication, YARN, MapReduce example (slide 5), HBase vs MongoDB (slide 6), how eBay uses Hadoop (slides 2, 5).
+
+===== SLIDE 10 =====
+References
+Monash, C. (2009). eBay's two enormous data warehouses. DBMS2. dbms2.com/2009/04/30/ebays-two-enormous-data-warehouses
+Monash, C. (2010). eBay followup: Greenplum out, Teradata > 10 petabytes, Hadoop has some value, and more. DBMS2. dbms2.com/2010/10/06/
+eBay Inc. (n.d.). Hadoop: The power of the elephant. eBay Tech Blog. innovation.ebayinc.com/stories/hadoop-the-power-of-the-elephant
+eBay Inc. (n.d.). HDFS storage efficiency using tiered storage. eBay Tech Blog. innovation.ebayinc.com/stories/hdfs-storage-efficiency-using-tiered-storage
+eBay Inc. (n.d.). Hadoop-2 @ eBay [Slides]. Hadoop Summit. slideshare.net/Hadoop_Summit/hadoop2-ebay
+eBay Inc. (c. 2013). Hadoop and HBase @ eBay [Slides]. slideshare.net/slideshow/ma-june27-140pmroom212v2/24108965
+Patel, J. (2012). Cassandra at eBay [Slides]. Cassandra Summit 2012. slideshare.net/jaykumarpatel/cassandra-at-ebay-13920376
+eBay Inc. (2014). Announcing Kylin: Extreme OLAP engine for big data. eBay Tech Blog. innovation.ebayinc.com/stories/announcing-kylin-extreme-olap-engine-for-big-data
+MongoDB Inc. (n.d.). MongoDB at eBay [Slides]. slideshare.net/mongodb/mongodb-at-ebay
+10
+--- speaker notes ---
+Dates marked n.d. were not shown on the pages we read. The MongoDB at eBay entry was found through search summaries; open it and confirm the claims before presenting. The 2013 and 2014 figures are from eBay conference slides and are not always consistent with each other (e.g. cluster sizes), so the slides use ranges and 'hundreds of PB' instead of single numbers.
