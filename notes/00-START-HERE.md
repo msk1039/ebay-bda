@@ -11,6 +11,7 @@ These notes teach the whole syllabus from scratch (Units 1 to 4) and prepare you
 | 3 | [02-unit2-hadoop-and-nosql.md](02-unit2-hadoop-and-nosql.md) | Distributed systems, HDFS, YARN, MapReduce, NoSQL (HBase, Cassandra, MongoDB), the Facebook case study | **Yes** (slides 4–8) |
 | 4 | [03-unit3-apache-spark.md](03-unit3-apache-spark.md) | Spark core, the spark shell, writing apps, RDDs and optimization, Spark algorithms, Twitter sentiment analysis | Later (FA2 / exam) |
 | 5 | [04-unit4-big-data-visualization.md](04-unit4-big-data-visualization.md) | Chart types, challenges, geospatial / network / time-series / heatmap, streaming and high-dimensional data, tools, Uber pricing case | Later (FA2 / exam) |
+| 6 | [06-fa2-spark-presentation-guide.md](06-fa2-spark-presentation-guide.md) | **FA2:** what the Olist dataset has, a cell-by-cell walkthrough of the notebook, the 5-minute script, rubric checklist, numbers to memorise, 30 viva questions | **For FA2: read this first, then 03 and 04** |
 
 The FA1 deck covers **Units 1 and 2 only**. Units 3 and 4 are what your FA2 Spark notebook (`../fa2/`) was graded on, and they're in the exam syllabus.
 
